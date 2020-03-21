@@ -27,15 +27,9 @@ class nodelive {
 			$hasnodelive: true,
 			$nodelive: this,
 			$dirname: process.cwd(),
-			$require: function(...args) {
-				return require(path.resolve(process.cwd(), ...args));
-			},
-			$import: function(...args) {
-				return importFresh(path.resolve(process.cwd(), ...args));
-			},
-			$resolve: function(...args) {
-				return path.resolve(process.cwd(), ...args);
-			},
+			$require: this.$require,
+			$import: this.$import,
+			$resolve: this.$resolve,
 		});
 	}
 
@@ -139,6 +133,54 @@ class nodelive {
 		}
 		this.print("(" + (isFunc ? sizeof(data.toString()) : sizeof(data)) + " bytes)")
 		return this;
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.description(data:any)`
+	 * 
+	 * Returns a deep description of all the properties of an object. The description contains the
+	 * index (sorted alphabetically), the type of property and the property name.
+	 * 
+	 */
+	static description(data) {
+		let props = [];
+		const original = data;
+		let obj = data;
+		do {
+		    props = props.concat(Object.getOwnPropertyNames(obj));
+		} while (obj = Object.getPrototypeOf(obj));
+		return Object.assign({}, props.sort().filter(function(e, i, arr) { 
+		   if (e!=arr[i+1]) return true;
+		}).map(property => {
+			return [typeof original[property], property];
+		}));
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.describe(data:any)`
+	 * 
+	 * Prints the description extracted of the passed object.
+	 * 
+	 * Chainable method.
+	 * 
+	 */
+	static describe(data) {
+		return this.print(this.description(data));
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.view(data:any)`
+	 * 
+	 * Stringifies and prints any data.
+	 * 
+	 * Chainable method.
+	 * 
+	 */
+	static view(data) {
+		return this.print(this.stringify(data, null, 2));
 	}
 
 	/**
@@ -499,6 +541,39 @@ class nodelive {
 				});
 			});
 		});
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.$require(...args)`
+	 * 
+	 * Allows to `require` files.
+	 * 
+	 */
+	static $require(...args) {
+		return require(...args);
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.$import(...args)`
+	 * 
+	 * Allows to `importFresh` (like a `require` but without cache) files.
+	 * 
+	 */
+	static $import(...args) {
+		return importFresh(...args);
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.$resolve(...args)`
+	 * 
+	 * Allows to `path.resolve` files.
+	 * 
+	 */
+	static $resolve(...args) {
+		return path.resolve(...args);
 	}
 
 }

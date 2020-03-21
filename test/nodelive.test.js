@@ -36,6 +36,45 @@ describe("nodelive class", function() {
 		});
 	});
 
+	it("nodelive.description(data)", async function() {
+		this.timeout(100*1000);
+		try {
+			const a = "aaa", b = "bbb", c = "ccc";
+			console.log(nodelive.description({a,b,c}));
+		} catch(error) {
+			console.log(error);
+		}
+	});
+
+	it("nodelive.describe(data)", async function() {
+		this.timeout(100*1000);
+		try {
+			const a = "aaa", b = "bbb", c = "ccc";
+			nodelive.describe({a,b,c});
+		} catch(error) {
+			console.log(error);
+		}
+	});
+
+	it("nodelive.view(data)", async function() {
+		this.timeout(100*1000);
+		try {
+			const a = "aaa", b = "bbb", c = "ccc";
+			nodelive.view({a,b,c});
+		} catch(error) {
+			console.log(error);
+		}
+	});
+
+	it("nodelive.explore()", async function() {
+		try {
+			this.timeout(60*1000);
+			nodelive.explore((a = 100) => a + 500);
+		} catch(error) {
+			console.log(error);
+		}
+	});
+
 	it("nodelive.memory()", function() {
 		nodelive.memory();
 	});
@@ -101,15 +140,6 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive.explore()", async function() {
-		try {
-			this.timeout(60*1000);
-			nodelive.explore((a = 100) => a + 500);
-		} catch(error) {
-			console.log(error);
-		}
-	});
-
 	it("nodelive.cmd()", async function() {
 		try {
 			nodelive.cmd("echo 'hello from the inside'");
@@ -135,7 +165,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it.only("nodelive.editor()", async function() {
+	it("nodelive.editor()", async function() {
 		this.timeout(100*1000);
 		try {
 			await nodelive.editor(["a", "b", "c"], ["aaa","bbb","ccc"]);

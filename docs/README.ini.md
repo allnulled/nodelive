@@ -76,6 +76,24 @@ nodelive.print("Some message");
 nodelive.explore(data => 500);
 ```
 
+#### *List all properties of an object.*
+
+```js
+nodelive.description(global);
+```
+
+#### *Print the description of an object.*
+
+```js
+nodelive.describe(global);
+```
+
+#### *Stringify and print data.*
+
+```js
+nodelive.view({a:"a",b:"b"});
+```
+
 #### *Show memory usage.*
 
 ```js

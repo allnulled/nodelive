@@ -76,6 +76,24 @@ nodelive.print("Some message");
 nodelive.explore(data => 500);
 ```
 
+#### *List all properties of an object.*
+
+```js
+nodelive.description(global);
+```
+
+#### *Print the description of an object.*
+
+```js
+nodelive.describe(global);
+```
+
+#### *Stringify and print data.*
+
+```js
+nodelive.view({a:"a",b:"b"});
+```
+
 #### *Show memory usage.*
 
 ```js
@@ -199,6 +217,32 @@ Chainable method.
 
 
 
+### `nodelive.description(data:any)`
+
+Returns a deep description of all the properties of an object. The description contains the
+index (sorted alphabetically), the type of property and the property name.
+
+
+
+
+### `nodelive.describe(data:any)`
+
+Prints the description extracted of the passed object.
+
+Chainable method.
+
+
+
+
+### `nodelive.view(data:any)`
+
+Stringifies and prints any data.
+
+Chainable method.
+
+
+
+
 ### `nodelive.memory()`
 
 Prints a memory usage summary.
@@ -290,6 +334,27 @@ To get out, save an empty text.
 ### `nodelive.editor(args:Object): Promise`
 
 Asynchronous. Same as the one before, but accepting a key-value pairs object for arguments injection.
+
+
+
+
+### `nodelive.$require(...args)`
+
+Allows to `require` files.
+
+
+
+
+### `nodelive.$import(...args)`
+
+Allows to `importFresh` (like a `require` but without cache) files.
+
+
+
+
+### `nodelive.$resolve(...args)`
+
+Allows to `path.resolve` files.
 
 
 
