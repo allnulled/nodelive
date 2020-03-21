@@ -1,6 +1,6 @@
 # nodelive
 
-Dynamic interaction within your nodejs programs.
+Dynamic interaction within nodejs programs.
 
 ## Install
 
@@ -8,25 +8,25 @@ Dynamic interaction within your nodejs programs.
 
 ## Why?
 
-This is a tool aimed to make your development faster
-by letting you execute javascript inside your programs.
+To inject code in live node executions.
 
-With ES6 `async/await` feature, we can fake asynchronous
-code blocking in our nodejs programs. What `nodelive` does
-is to let you interact with your programs from the inside,
-and thanks to `async/await`, it can be done almost effortlessly.
+To not have to open Chrome to debug nodejs.
+
+To debug, in live, from the inside, with some tools already.
+
+To hack other programs easily too, why not.
 
 ## Features
 
- - Live code injection and exploration.
- - Memory usage printing.
- - Advanced printing for debugging.
-    - Functions source code.
-    - Circular JSON structures.
- - Easy command line interface input for:
-    - Text
-    - Confirm
-    - Options
+ [✔] Live code injection and exploration.
+ [✔] Memory usage printing.
+ [✔] Advanced printing for debugging.
+    [✔] Functions source code.
+    [✔] Circular JSON structures.
+ [✔] Easy command line interface input for:
+    [✔] Text
+    [✔] Confirm
+    [✔] Options
 
 ## Get started
 
@@ -40,9 +40,109 @@ const nodelive = require("nodelive");
 
 To see the examples, please go to the tests of the project at Github.
 
+## Demo
+
+You will find examples of the usable API for the next topics:
+
+   [✔] For general help
+   [✔] For console
+   [✔] For editor
+
+### For general help
+
+#### *Store and retrieve values from nodelive (a simple helper storage).*
+
+```js
+nodelive.set("a", "a").put({b:"b",c:"c"});
+nodelive.get("b");   // >> "b"
+nodelive.get();      // >> {a:"a",b:"b",c:"c"}
+```
+
+#### *Stringify (supports circular JSON).*
+
+```js
+nodelive.stringify({some:"object"}, null, 2);
+```
+
+#### *Print message.*
+
+```js
+nodelive.print("Some message");
+```
+
+#### *Explore any type of data.*
+
+```js
+nodelive.explore(data => 500);
+```
+
+#### *Show memory usage.*
+
+```js
+nodelive.explore(data => 500);
+```
+
+### For console
+
+#### *Ask for user input (as string).*
+
+```js
+const name = await nodelive.ask("What is your name?");
+```
+
+#### *Ask for user input (as boolean).*
+
+```js
+const isBusy = await nodelive.askif("Are you very busy right now?");
+```
+
+#### *Ask for user input, as options election (of strings).*
+
+```js
+const optionSelected = await nodelive.askone(["option a", "option b", "option c"], "Choose an option:");
+```
+
+#### *Execute command for the native console synchronously*
+
+```js
+await nodelive.cmd("npm run test")
+```
+
+#### *Enter into a command-line loop to inject code!*
+
+```js
+await nodelive.code()
+```
+
+#### *Evaluate specific expression from console!*
+
+```js
+await nodelive.evaluate()
+```
+
+### For editors
+
+#### *Open editor and inject code in live!*
+
+```js
+const parameterNames = ["name", "age"];
+const parameters = ["Carlos", "50"];
+nodelive.PREFERRED_EDITOR = "brackets"; // By default it is "subl" of Sublime Text!
+await nodelive.editor(parameterNames, parameters);
+```
+
 ## API
 
 Here you can have an overview of the whole API.
+
+*Note: all the code injections support `await` expressions by default.*
+
+
+
+### `nodelive.get(name:String)`
+
+Gets a value from the nodelive internal memory.
+
 
 
 
@@ -60,9 +160,9 @@ Saves a set of key-value pairs in the nodelive internal memory.
 
 
 
-### `nodelive.get(name:String)`
+### `nodelive.stringify(...args)`
 
-Gets a value from the nodelive internal memory.
+Returns a JSON representation, no matter about circular JSON or functions.
 
 
 
@@ -91,13 +191,6 @@ Prints a memory usage summary.
 ### `nodelive.cmd(command:String, options:Object)`
 
 Synchronous. Execute command-line commands in a nut.
-
-
-
-
-### `nodelive.stringify(...args)`
-
-Returns a JSON representation, no matter about circular JSON or functions.
 
 
 

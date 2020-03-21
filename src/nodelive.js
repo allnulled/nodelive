@@ -41,6 +41,23 @@ class nodelive {
 
 	/**
 	 * 
+	 * ### `nodelive.get(name:String)`
+	 * 
+	 * Gets a value from the nodelive internal memory.
+	 * 
+	 */
+	static get(name) {
+		if (typeof name === "undefined") {
+			return memory;
+		}
+		if (!(name in memory)) {
+			throw new Error("nodelive cannot find <" + name + ">");
+		}
+		return memory[name];
+	}
+
+	/**
+	 * 
 	 * ### `nodelive.set(name:String, value:any)`
 	 * 
 	 * Saves a value in the nodelive internal memory.
@@ -71,19 +88,13 @@ class nodelive {
 
 	/**
 	 * 
-	 * ### `nodelive.get(name:String)`
+	 * ### `nodelive.stringify(...args)`
 	 * 
-	 * Gets a value from the nodelive internal memory.
+	 * Returns a JSON representation, no matter about circular JSON or functions.
 	 * 
 	 */
-	static get(name) {
-		if (typeof name === "undefined") {
-			return memory;
-		}
-		if (!(name in memory)) {
-			throw new Error("nodelive cannot find <" + name + ">");
-		}
-		return memory[name];
+	static stringify(...args) {
+		return stringify(...args);
 	}
 
 	/**
@@ -150,17 +161,6 @@ class nodelive {
 
 	/**
 	 * 
-	 * ### `nodelive.stringify(...args)`
-	 * 
-	 * Returns a JSON representation, no matter about circular JSON or functions.
-	 * 
-	 */
-	static stringify(...args) {
-		return stringify(...args);
-	}
-
-	/**
-	 * 
 	 * ### `nodelive.ask(message:String): Promise<String>`
 	 * 
 	 * Asynchronous. Prints a question. Returns an answer as string.
@@ -221,7 +221,7 @@ class nodelive {
 		return new Promise((ok, fail) => {
 			const q = message;
 			debug(q);
-			const optionsList = Object.values(options).concat(["(exit)"]);
+			const optionsList = Object.values(options).concat(["[exit]"]);
 			console.log(optionsList.reduce((output, item, index) => {
 				output += "    " + (index + 1) + ") " + item + (index === optionsList.length - 1 ? "" : "\n");
 				return output;
@@ -371,10 +371,18 @@ class nodelive {
 	 * 
 	 */
 	static executeCode(input, isMultiline, ok, fail, argsNames = [], args = []) {
-		const code = beautify(!isMultiline ? `((${argsNames.join(", ")}) => {
-			return ${input}
-		})(...args)` : `((${argsNames.join(", ")}) => {
-			${input}
+		const code = beautify(!isMultiline ? `(async (${argsNames.join(", ")}) => {
+			try {
+				return ${input}
+			} catch(error) {
+				this.debugError(error);
+			}
+		})(...args)` : `(async (${argsNames.join(", ")}) => {
+			try {
+				${input}
+			} catch(error) {
+				this.debugError(error);
+			}
 		})(...args)`);
 		debug(chalk.red.bold("[code:]"));
 		console.log(chalk.blackBright.bold(code));
@@ -387,10 +395,7 @@ class nodelive {
 			output = error;
 		}
 		if (hadError) {
-			debug(chalk.red.bold("[error message:]"));
-			console.log(this.stringify(output.message, null, 2));
-			debug(chalk.red.bold("[error data:]"));
-			console.log(util.inspect(output, null, 2));
+			this.debugError(error);
 		} else {
 			debug(chalk.green.bold("[output:]"));
 			console.log(this.stringify(output, null, 2));
@@ -413,6 +418,13 @@ class nodelive {
 				fail(error);
 			}
 		}
+	}
+
+	static debugError(error) {
+		debug(chalk.red.bold("[error message:]"));
+		console.log(this.stringify(error.message, null, 2));
+		debug(chalk.red.bold("[error data:]"));
+		console.log(util.inspect(error, null, 2));
 	}
 
 	/**
@@ -446,10 +458,7 @@ class nodelive {
 				this.print("Injecting...");
 				fs.readFile(pathToFileTemp, "utf8", (error, contents) => {
 					if(error) {
-						debug(chalk.red.bold("[error message:]"));
-						console.log(this.stringify(error.message, null, 2));
-						debug(chalk.red.bold("[error data:]"));
-						console.log(util.inspect(error, null, 2));
+						this.debugError(error);
 						return;
 					}
 					onSuccess(contents);

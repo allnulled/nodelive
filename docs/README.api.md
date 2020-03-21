@@ -1,4 +1,11 @@
 
+### `nodelive.get(name:String)`
+
+Gets a value from the nodelive internal memory.
+
+
+
+
 ### `nodelive.set(name:String, value:any)`
 
 Saves a value in the nodelive internal memory.
@@ -13,9 +20,9 @@ Saves a set of key-value pairs in the nodelive internal memory.
 
 
 
-### `nodelive.get(name:String)`
+### `nodelive.stringify(...args)`
 
-Gets a value from the nodelive internal memory.
+Returns a JSON representation, no matter about circular JSON or functions.
 
 
 
@@ -44,13 +51,6 @@ Prints a memory usage summary.
 ### `nodelive.cmd(command:String, options:Object)`
 
 Synchronous. Execute command-line commands in a nut.
-
-
-
-
-### `nodelive.stringify(...args)`
-
-Returns a JSON representation, no matter about circular JSON or functions.
 
 
 

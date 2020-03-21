@@ -128,7 +128,7 @@ describe("nodelive class", function() {
 			nodelive.set("messageForHumans", ["please", {
 				respect: "all"
 			}]);
-			nodelive.print("Select option (4) to exit.");
+			nodelive.print("Select last option to exit.");
 			await nodelive.inspect();
 		} catch (error) {
 			console.log(error);
