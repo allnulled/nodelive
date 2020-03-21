@@ -11,36 +11,36 @@ const data = {
 
 describe("nodelive class", function() {
 
-	it("nodelive#set(name, value)", function() {
+	it("nodelive.set(name, value)", function() {
 		nodelive.set("message", "bye!");
 	});
 
-	it("nodelive#put(values)", function() {
+	it("nodelive.put(values)", function() {
 		nodelive.put({"things": [0,1,2]});
 	});
 
-	it("nodelive#get(name)", function() {
+	it("nodelive.get(name)", function() {
 		expect(nodelive.get("message")).to.equal("bye!");
 	});
 
-	it("nodelive#get()", function() {
+	it("nodelive.get()", function() {
 		expect(nodelive.get()).to.deep.equal({
 			message: "bye!",
 			things: [0,1,2]
 		});
 	});
 
-	it("nodelive#print(...data)", function() {
+	it("nodelive.print(...data)", function() {
 		nodelive.print({
 			some: "data"
 		});
 	});
 
-	it("nodelive#memory()", function() {
+	it("nodelive.memory()", function() {
 		nodelive.memory();
 	});
 
-	it("nodelive#ask()", async function() {
+	it("nodelive.ask()", async function() {
 		try {
 			this.timeout(60 * 1000);
 			const answer = await nodelive.ask("can you write 'ok'?");
@@ -50,7 +50,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#askif()", async function() {
+	it("nodelive.askif()", async function() {
 		try {
 			this.timeout(60 * 1000);
 			const answer = await nodelive.askif("do you like this tool?");
@@ -60,7 +60,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#askone()", async function() {
+	it("nodelive.askone()", async function() {
 		try {
 			this.timeout(60 * 1000);
 			const answer = await nodelive.askone(["a", "b", "c", "d"], "Type 1:");
@@ -70,7 +70,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#evaluate()", async function() {
+	it("nodelive.evaluate()", async function() {
 		try {
 			this.timeout(60 * 1000);
 			nodelive.print("write <'ok'> (quotes included)");
@@ -81,7 +81,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#code()", async function() {
+	it("nodelive.code()", async function() {
 		try {
 			this.timeout(60 * 1000);
 			nodelive.print("write <return 'ok'>");
@@ -92,7 +92,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#live()", async function() {
+	it("nodelive.live()", async function() {
 		try {
 			this.timeout(60*1000);
 			await nodelive.live("return <'exit'> to leave");
@@ -101,7 +101,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#explore()", async function() {
+	it("nodelive.explore()", async function() {
 		try {
 			this.timeout(60*1000);
 			nodelive.explore((a = 100) => a + 500);
@@ -110,7 +110,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#cmd()", async function() {
+	it("nodelive.cmd()", async function() {
 		try {
 			nodelive.cmd("echo 'hello from the inside'");
 		} catch(error) {
@@ -118,7 +118,7 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive#inspect()", async function() {
+	it("nodelive.inspect()", async function() {
 		try {
 			this.timeout(60 * 1000);
 			nodelive.set("messageForDogs", "respect cats");
@@ -131,6 +131,15 @@ describe("nodelive class", function() {
 			nodelive.print("Select option (4) to exit.");
 			await nodelive.inspect();
 		} catch (error) {
+			console.log(error);
+		}
+	});
+
+	it("nodelive.editor()", async function() {
+		this.timeout(100*1000);
+		try {
+			await nodelive.editor(["op1", "op2", "op3"], [1,2,3]);
+		} catch(error) {
 			console.log(error);
 		}
 	});

@@ -1,18 +1,21 @@
+const fs = require("fs");
+const path = require("path");
 const util = require("util");
-const Debug = require("debug");
-const debug = Debug("nodelive");
-const Inquirer = require("inquirer");
+const _debug = require("debug");
+const cp = require("child_process");
+const inquirer = require("inquirer");
 const stringify = require("json-stringify-safe");
 const exec = require("execute-command-sync");
-const displayForm = Inquirer.createPromptModule();
 const importFresh = require("import-fresh");
 const chalk = require("chalk");
 const chokidar = require("chokidar");
 const beautify = require("js-beautify").js;
 const sizeof = require("object-sizeof");
 const memory = {};
+const debug = _debug("nodelive");
+const displayForm = inquirer.createPromptModule();
 
-Debug.enable("nodelive");
+_debug.enable("nodelive");
 
 class nodelive {
 
@@ -136,6 +139,28 @@ class nodelive {
 
 	/**
 	 * 
+	 * ### `nodelive.cmd(command:String, options:Object)`
+	 * 
+	 * Synchronous. Execute command-line commands in a nut.
+	 * 
+	 */
+	static cmd(...args) {
+		return exec(...args);
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.stringify(...args)`
+	 * 
+	 * Returns a JSON representation, no matter about circular JSON or functions.
+	 * 
+	 */
+	static stringify(...args) {
+		return stringify(...args);
+	}
+
+	/**
+	 * 
 	 * ### `nodelive.ask(message:String): Promise<String>`
 	 * 
 	 * Asynchronous. Prints a question. Returns an answer as string.
@@ -230,29 +255,33 @@ class nodelive {
 	 * 
 	 * ### `nodelive.code(message:String): Promise`
 	 * 
-	 * Inject (multiline) code in live.
+	 * Asynchronous. Inject (multiline) code in live.
+	 * 
+	 * To get out, you must enter an empty line.
 	 * 
 	 */
 	static code(message) {
-		return this._eval(message, true)
+		return this._evaluate(message, true)
 	}
 
 	/**
 	 * 
 	 * ### `nodelive.evaluate(message:String): Promise`
 	 * 
-	 * Inject (oneline) code in live.
+	 * Asynchronous. Evaluate js expressions (one line, something) of code in live.
 	 * 
 	 */
 	static evaluate(message) {
-		return this._eval(message, false);
+		return this._evaluate(message, false);
 	}
 
 	/**
 	 * 
 	 * ### `nodelive.live(message:String): Promise`
 	 * 
-	 * Inject (multiline) code in loop (so, a simple REPL) until you return "exit" (as a string).
+	 * Asynchronous. Inject (multiline) code in loop (so, a simple REPL) until you return "exit" (as a string).
+	 * 
+	 * To get out, you must `return 'exit'`.
 	 * 
 	 */
 	static live(message) {
@@ -276,7 +305,7 @@ class nodelive {
 	 * 
 	 * ### `nodelive.inspect(message:String): Promise`
 	 * 
-	 * Explore the data that `nodelive` has saved in memory (from selector).
+	 * Asynchronous. Explore the data that `nodelive` has saved in memory (from selector).
 	 * 
 	 */
 	static inspect(message = false) {
@@ -297,18 +326,7 @@ class nodelive {
 		})
 	}
 
-	/**
-	 * 
-	 * ### `nodelive.stringify(...args)`
-	 * 
-	 * Returns a JSON representation, no matter about circular JSON or functions.
-	 * 
-	 */
-	static stringify(...args) {
-		return stringify(...args);
-	}
-
-	static _eval(message = false, isMultiline = false) {
+	static _evaluate(message = false, isMultiline = false) {
 		this.initializeGlobalAPI();
 		return new Promise((proceed, stop) => {
 			new Promise((ok, fail) => {
@@ -340,64 +358,109 @@ class nodelive {
 				};
 				next();
 			}).then(input => {
-				const code = beautify(!isMultiline ? `(() => {
-					return ${input}
-				})()` : `(() => {
-					${input}
-				})()`);
-				debug(chalk.red.bold("[code:]"));
-				console.log(chalk.blackBright.bold(code));
-				console.log();
-				let output, hadError = false;
-				try {
-					output = eval(code);
-				} catch (error) {
-					hadError = true;
-					output = error;
-				}
-				if (hadError) {
-					debug(chalk.red.bold("[error message:]"));
-					console.log(this.stringify(output.message, null, 2));
-					debug(chalk.red.bold("[error data:]"));
-					console.log(util.inspect(output, null, 2));
-				} else {
-					debug(chalk.green.bold("[output:]"));
-					console.log(this.stringify(output, null, 2));
-				}
-				if (output instanceof Promise) {
-					output.then(result => {
-						debug("[asynchronous output:]");
-						console.log(util.inspect(result));
-						console.log();
-						try {
-							proceed(result);
-						} catch (error) {
-							stop(error);
-						}
-					}).catch(stop);
-				} else {
-					try {
-						proceed(output);
-					} catch (error) {
-						stop(error);
-					}
-				}
+				this.executeCode(input, isMultiline, proceed, stop);
 			}).catch(stop);
 		});
 	}
 
 	/**
 	 * 
-	 * ### `nodelive.cmd(command:String, options:Object)`
+	 * ### `nodelive.executeCode(code:String, isMultiline:Boolean, ok:Function, fail:Function)`
 	 * 
-	 * Execute command-line commands in a nut.
+	 * Asynchronous callback. Executes code 
 	 * 
 	 */
-	static cmd(...args) {
-		return exec(...args);
+	static executeCode(input, isMultiline, ok, fail, argsNames = [], args = []) {
+		const code = beautify(!isMultiline ? `((${argsNames.join(", ")}) => {
+			return ${input}
+		})(...args)` : `((${argsNames.join(", ")}) => {
+			${input}
+		})(...args)`);
+		debug(chalk.red.bold("[code:]"));
+		console.log(chalk.blackBright.bold(code));
+		console.log();
+		let output, hadError = false;
+		try {
+			output = eval(code);
+		} catch (error) {
+			hadError = true;
+			output = error;
+		}
+		if (hadError) {
+			debug(chalk.red.bold("[error message:]"));
+			console.log(this.stringify(output.message, null, 2));
+			debug(chalk.red.bold("[error data:]"));
+			console.log(util.inspect(output, null, 2));
+		} else {
+			debug(chalk.green.bold("[output:]"));
+			console.log(this.stringify(output, null, 2));
+		}
+		if (output instanceof Promise) {
+			output.then(result => {
+				debug("[asynchronous output:]");
+				console.log(util.inspect(result));
+				console.log();
+				try {
+					ok(result);
+				} catch (error) {
+					fail(error);
+				}
+			}).catch(fail);
+		} else {
+			try {
+				ok(output);
+			} catch (error) {
+				fail(error);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * ### `nodelive.editor()`
+	 * 
+	 * Asynchronous. Opens a file on your preferred editor (set it at `nodelive.PREFERRED_EDITOR`)
+	 * that when saved, it is injected.
+	 * 
+	 * To get out, save an empty text.
+	 * 
+	 */
+	static editor(argsNames, args) {
+		return new Promise((ok, fail) => {
+			let watcher;
+			const pathToFileTemp = path.resolve(process.cwd(), ".nodelive.live.js");
+			fs.writeFileSync(pathToFileTemp, "", "utf8");
+			const editorProcess = cp.spawn(this.PREFERRED_EDITOR, [pathToFileTemp], {
+				detached: true,
+				stdio: "inherit"
+			});
+			const onSuccess = (contents) => {
+				if(contents === "") {
+					editorProcess.kill();
+					watcher.close();
+					return ok();
+				}
+				this.executeCode(contents, true, data => this.print("success", data), error => this.print(error), argsNames, args);
+			};
+			watcher = chokidar.watch(pathToFileTemp).on("change", () => {
+				this.print("Injecting...");
+				fs.readFile(pathToFileTemp, "utf8", (error, contents) => {
+					if(error) {
+						debug(chalk.red.bold("[error message:]"));
+						console.log(this.stringify(error.message, null, 2));
+						debug(chalk.red.bold("[error data:]"));
+						console.log(util.inspect(error, null, 2));
+						return;
+					}
+					onSuccess(contents);
+				});
+			});
+		});
 	}
 
 }
+
+nodelive.PREFERRED_EDITOR = "subl";
 
 global.nodelive = nodelive;
 

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "src/nodelive.js",
   "directories": {
+    "doc": "docs",
     "test": "test"
   },
   "scripts": {
@@ -11,8 +12,12 @@
     "test": "mocha test/**/*.test.js",
     "cover": "nyc --reporter=html npm run test"
   },
-  "keywords": ["node","live","code"],
-  "author": "",
+  "keywords": [
+    "node",
+    "live",
+    "code"
+  ],
+  "author": "https://github.com/allnulled",
   "license": "WTFPL",
   "description": "Dynamic interaction within your nodejs programs.",
   "dependencies": {
@@ -25,8 +30,7 @@
     "inquirer": "^7.1.0",
     "js-beautify": "^1.10.3",
     "json-stringify-safe": "^5.0.1",
-    "object-sizeof": "^1.5.3",
-    "sizeof": "^1.0.0"
+    "object-sizeof": "^1.5.3"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -35,5 +39,13 @@
     "mocha": "^7.1.1",
     "nodemon": "^2.0.2",
     "nyc": "^15.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allnulled/nodelive.git"
+  },
+  "bugs": {
+    "url": "https://github.com/allnulled/nodelive/issues"
+  },
+  "homepage": "https://github.com/allnulled/nodelive#readme"
 }
