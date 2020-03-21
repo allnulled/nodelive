@@ -283,9 +283,13 @@ and output a standard response.
 Asynchronous. Opens a file on your preferred editor (set it at `nodelive.PREFERRED_EDITOR`)
 that when saved, it is injected.
 
-It has the ability to pass parameters and rename them.
+It has the ability to pass parameters and rename them, for your code to receive them.
 
 To get out, save an empty text.
+
+### `nodelive.editor(args:Object): Promise`
+
+Asynchronous. Same as the one before, but accepting a key-value pairs object for arguments injection.
 
 
 

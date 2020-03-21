@@ -135,10 +135,20 @@ describe("nodelive class", function() {
 		}
 	});
 
-	it("nodelive.editor()", async function() {
+	it.only("nodelive.editor()", async function() {
 		this.timeout(100*1000);
 		try {
-			await nodelive.editor(["op1", "op2", "op3"], [1,2,3]);
+			await nodelive.editor(["a", "b", "c"], ["aaa","bbb","ccc"]);
+		} catch(error) {
+			console.log(error);
+		}
+	});
+
+	it("nodelive.editor({...mapping}')", async function() {
+		this.timeout(100*1000);
+		try {
+			const a = "aaa", b = "bbb", c = "ccc";
+			await nodelive.editor({a,b,c});
 		} catch(error) {
 			console.log(error);
 		}

@@ -447,12 +447,30 @@ class nodelive {
 	 * Asynchronous. Opens a file on your preferred editor (set it at `nodelive.PREFERRED_EDITOR`)
 	 * that when saved, it is injected.
 	 * 
-	 * It has the ability to pass parameters and rename them.
+	 * It has the ability to pass parameters and rename them, for your code to receive them.
 	 * 
 	 * To get out, save an empty text.
 	 * 
+	 * ### `nodelive.editor(args:Object): Promise`
+	 * 
+	 * Asynchronous. Same as the one before, but accepting a key-value pairs object for arguments injection.
+	 * 
 	 */
-	static editor(argsNames, args) {
+	static editor(...receivedArgs) {
+		let argsNames, args;
+		if(receivedArgs.length === 1) {
+			if(typeof receivedArgs[0] === "object") {
+				args = [];
+				argsNames = [];
+				Object.keys(receivedArgs[0]).forEach(key => {
+					args.push(receivedArgs[0][key]);
+					argsNames.push(key);
+				});
+			}
+		} else if(receivedArgs.length === 2) {
+			argsNames = receivedArgs[0];
+			args = receivedArgs[1];
+		}
 		return new Promise((ok, fail) => {
 			let watcher;
 			const pathToFileTemp = path.resolve(process.cwd(), ".nodelive.live.js");
@@ -465,6 +483,7 @@ class nodelive {
 				if(contents === "") {
 					editorProcess.kill();
 					watcher.close();
+					fs.unlink(pathToFileTemp, error => {});
 					return ok();
 				}
 				this.executeCode(contents, true, data => this.print("success", data), error => this.print(error), argsNames, args);
