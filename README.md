@@ -18,15 +18,15 @@ To hack other programs easily too, why not.
 
 ## Features
 
- [✔] Live code injection and exploration.
- [✔] Memory usage printing.
- [✔] Advanced printing for debugging.
-    [✔] Functions source code.
-    [✔] Circular JSON structures.
- [✔] Easy command line interface input for:
-    [✔] Text
-    [✔] Confirm
-    [✔] Options
+ - [✔] Live code injection and exploration.
+ - [✔] Memory usage printing.
+ - [✔] Advanced printing for debugging.
+    - [✔] Functions source code.
+    - [✔] Circular JSON structures.
+ - [✔] Easy command line interface input for:
+    - [✔] Text
+    - [✔] Confirm
+    - [✔] Options
 
 ## Get started
 
@@ -44,9 +44,9 @@ To see the examples, please go to the tests of the project at Github.
 
 You will find examples of the usable API for the next topics:
 
-   [✔] For general help
-   [✔] For console
-   [✔] For editor
+   - [✔] For general help
+   - [✔] For console
+   - [✔] For editor
 
 ### For general help
 
