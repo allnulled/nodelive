@@ -260,7 +260,10 @@ Asynchronous. Explore the data that `nodelive` has saved in memory (from selecto
 
 ### `nodelive.executeCode(code:String, isMultiline:Boolean, ok:Function, fail:Function)`
 
-Asynchronous callback. Executes code 
+Asynchronous callback. Executes `js` code, embeded in `async` environment already.
+
+Under the hood, `code`, `evaluate`, `live` and `editor` functions use this method to inject code
+and output a standard response.
 
 
 
