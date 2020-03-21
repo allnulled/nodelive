@@ -79,7 +79,7 @@ nodelive.explore(data => 500);
 #### *Show memory usage.*
 
 ```js
-nodelive.explore(data => 500);
+nodelive.memory();
 ```
 
 ### For console
