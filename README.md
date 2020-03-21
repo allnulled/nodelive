@@ -160,12 +160,16 @@ Gets a value from the nodelive internal memory.
 
 Saves a value in the nodelive internal memory.
 
+Chainable method.
+
 
 
 
 ### `nodelive.put(Object:values)`
 
 Saves a set of key-value pairs in the nodelive internal memory.
+
+Chainable method.
 
 
 
@@ -181,6 +185,8 @@ Returns a JSON representation, no matter about circular JSON or functions.
 
 Prints the data by console.
 
+Chainable method.
+
 
 
 
@@ -188,12 +194,16 @@ Prints the data by console.
 
 A more exhaustive printing of objects, functions, etc.
 
+Chainable method.
+
 
 
 
 ### `nodelive.memory()`
 
 Prints a memory usage summary.
+
+Chainable method.
 
 
 
@@ -268,10 +278,12 @@ and output a standard response.
 
 
 
-### `nodelive.editor()`
+### `nodelive.editor(argsNames:Array<String>, args:Array<any>): Promise`
 
 Asynchronous. Opens a file on your preferred editor (set it at `nodelive.PREFERRED_EDITOR`)
 that when saved, it is injected.
+
+It has the ability to pass parameters and rename them.
 
 To get out, save an empty text.
 

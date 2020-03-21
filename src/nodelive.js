@@ -62,6 +62,8 @@ class nodelive {
 	 * 
 	 * Saves a value in the nodelive internal memory.
 	 * 
+	 * Chainable method.
+	 * 
 	 */
 	static set(name, value) {
 		if (name in memory) {
@@ -76,6 +78,8 @@ class nodelive {
 	 * ### `nodelive.put(Object:values)`
 	 * 
 	 * Saves a set of key-value pairs in the nodelive internal memory.
+	 * 
+	 * Chainable method.
 	 * 
 	 */
 	static put(values) {
@@ -103,6 +107,8 @@ class nodelive {
 	 * 
 	 * Prints the data by console.
 	 * 
+	 * Chainable method.
+	 * 
 	 */
 	static print(...data) {
 		debug(...data);
@@ -114,6 +120,8 @@ class nodelive {
 	 * ### `nodelive.explore(...data)`
 	 * 
 	 * A more exhaustive printing of objects, functions, etc.
+	 * 
+	 * Chainable method.
 	 * 
 	 */
 	static explore(data, deepDebug = false) {
@@ -138,6 +146,8 @@ class nodelive {
 	 * ### `nodelive.memory()`
 	 * 
 	 * Prints a memory usage summary.
+	 * 
+	 * Chainable method.
 	 * 
 	 */
 	static memory() {
@@ -432,10 +442,12 @@ class nodelive {
 
 	/**
 	 * 
-	 * ### `nodelive.editor()`
+	 * ### `nodelive.editor(argsNames:Array<String>, args:Array<any>): Promise`
 	 * 
 	 * Asynchronous. Opens a file on your preferred editor (set it at `nodelive.PREFERRED_EDITOR`)
 	 * that when saved, it is injected.
+	 * 
+	 * It has the ability to pass parameters and rename them.
 	 * 
 	 * To get out, save an empty text.
 	 * 
