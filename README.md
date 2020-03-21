@@ -38,8 +38,6 @@ To import it:
 const nodelive = require("nodelive");
 ```
 
-To see the examples, please go to the tests of the project at Github.
-
 ## Demo
 
 You will find examples of the usable API for the next topics:
@@ -47,6 +45,8 @@ You will find examples of the usable API for the next topics:
    - [✔] For general help
    - [✔] For console
    - [✔] For editor
+
+----
 
 ### For general help
 
@@ -82,7 +82,15 @@ nodelive.explore(data => 500);
 nodelive.memory();
 ```
 
+----
+
 ### For console
+
+#### *Execute command for the native console synchronously*
+
+```js
+nodelive.cmd("npm run test")
+```
 
 #### *Ask for user input (as string).*
 
@@ -102,12 +110,6 @@ const isBusy = await nodelive.askif("Are you very busy right now?");
 const optionSelected = await nodelive.askone(["option a", "option b", "option c"], "Choose an option:");
 ```
 
-#### *Execute command for the native console synchronously*
-
-```js
-await nodelive.cmd("npm run test")
-```
-
 #### *Enter into a command-line loop to inject code!*
 
 ```js
@@ -120,6 +122,8 @@ await nodelive.code()
 await nodelive.evaluate()
 ```
 
+----
+
 ### For editors
 
 #### *Open editor and inject code in live!*
@@ -127,9 +131,15 @@ await nodelive.evaluate()
 ```js
 const parameterNames = ["name", "age"];
 const parameters = ["Carlos", "50"];
+
 nodelive.PREFERRED_EDITOR = "brackets"; // By default it is "subl" of Sublime Text!
+
 await nodelive.editor(parameterNames, parameters);
 ```
+
+To see some more examples, please go to the [tests folder of the project at Github](https://github.com/allnulled/nodelive/tree/master/test).
+
+----
 
 ## API
 
